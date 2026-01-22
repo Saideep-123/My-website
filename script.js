@@ -88,10 +88,14 @@ function changeQty(v) {
 
 /* CART */
 function addToCart() {
-  cart[activeItem.name] = (cart[activeItem.name] || 0) + qty;
+  const weight = document.querySelector('input[name="weight"]:checked').value;
+  const key = `${activeItem.name} (${weight})`;
+
+  cart[key] = (cart[key] || 0) + qty;
   document.getElementById("cartCount").innerText = Object.values(cart).reduce((a,b)=>a+b,0);
   closeModal();
 }
+
 
 function toggleCart() {
   document.getElementById("cart").classList.toggle("open");
