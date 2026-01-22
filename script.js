@@ -1,97 +1,121 @@
-const ADMIN_PHONE="7989301401";
+const ADMIN_PHONE = "7989301401";
 
-const productsData=[
- {name:"Pootharekulu",cat:"Sweets",price:180,img:"https://i0.wp.com/vismaifood.com/storage/app/uploads/public/0f0/05a/dfb/thumb__700_0_0_0_auto.jpg"},
- {name:"Kakinada Kaja",cat:"Sweets",price:200,img:"https://upload.wikimedia.org/wikipedia/commons/6/6f/Kakinada_Kaja.jpg"},
- {name:"Chekkalu",cat:"Snacks",price:150,img:"https://www.archanaskitchen.com/images/archanaskitchen/1-Author/Shaheen_Ali/Andhra_Chekkalu.jpg"},
- {name:"Avakaya Pickle",cat:"Pickles",price:220,img:"https://www.vegrecipesofindia.com/wp-content/uploads/2021/05/avakaya-pickle.jpg"}
+let products = [
+  {
+    name: "Pootharekulu",
+    cat: "Sweets",
+    price: 450,
+    img: "https://upload.wikimedia.org/wikipedia/commons/7/7f/Pootharekulu.jpg",
+    desc: "Famous paper-thin sweet from Atreyapuram made with rice starch and jaggery."
+  },
+  {
+    name: "Kakinada Kaja",
+    cat: "Sweets",
+    price: 380,
+    img: "https://upload.wikimedia.org/wikipedia/commons/6/6c/Kakinada_Kaja.jpg",
+    desc: "Crispy layered sweet soaked in sugar syrup."
+  },
+  {
+    name: "Avakaya Pickle",
+    cat: "Pickles",
+    price: 320,
+    img: "https://upload.wikimedia.org/wikipedia/commons/9/91/Avakaya_Pickle.jpg",
+    desc: "Traditional Andhra mango pickle with mustard & garlic."
+  }
 ];
 
-let cart={},count=0,total=0;
-let activeItem=null,weight=500,qty=1;
+let cart = {};
+let activeProduct = null;
+let weight = 500;
+let qty = 1;
+let currentCat = "All";
 
-const products=document.getElementById("products");
-const categories=document.getElementById("categories");
+const grid = document.getElementById("productGrid");
+const modal = document.getElementById("productModal");
 
-["All","Sweets","Snacks","Pickles"].forEach(c=>{
-  const b=document.createElement("button");
-  b.innerText=c;b.onclick=()=>filterCat(c,b);
-  categories.appendChild(b);
-});
-categories.children[0].classList.add("active");
-
-function render(list){
-  products.innerHTML="";
-  if(!list.length){
-    products.innerHTML="<p style='grid-column:1/-1'>Sorry, item not found</p>";
-    return;
-  }
-  list.forEach(p=>{
-    products.innerHTML+=`
-      <div class="product" onclick='openModal(${JSON.stringify(p)})'>
-        <img src="${p.img}">
-        <div class="info">
-          <strong>${p.name}</strong>
-          <p>₹${p.price}</p>
+function renderProducts() {
+  grid.innerHTML = "";
+  products.filter(p => currentCat === "All" || p.cat === currentCat)
+    .forEach((p, i) => {
+      grid.innerHTML += `
+        <div class="product" onclick="openModal(${i})">
+          <img src="${p.img}">
+          <div class="info">
+            <strong>${p.name}</strong><br>
+            ₹${p.price}
+          </div>
         </div>
-      </div>`;
-  });
+      `;
+    });
 }
-render(productsData);
+renderProducts();
 
-function filterCat(c,btn){
-  [...categories.children].forEach(b=>b.classList.remove("active"));
-  btn.classList.add("active");
-  render(c==="All"?productsData:productsData.filter(p=>p.cat===c));
+function openModal(i) {
+  activeProduct = products[i];
+  qty = 1;
+  document.getElementById("modalImg").src = activeProduct.img;
+  document.getElementById("modalName").innerText = activeProduct.name;
+  document.getElementById("modalDesc").innerText = activeProduct.desc;
+  document.getElementById("qtyVal").innerText = qty;
+  modal.classList.add("show");
 }
-
-function openModal(p){
-  activeItem=p;qty=1;weight=500;
-  modal.classList.add("active");
-  mName.innerText=p.name;
-  mImg.src=p.img;
-  mDesc.innerText="Traditional homemade Konaseema recipe.";
-  updatePrice();
+function closeModal() {
+  modal.classList.remove("show");
 }
-function closeModal(){modal.classList.remove("active")}
-function setWeight(w,e){
-  weight=w;
-  document.querySelectorAll(".weight-boxes span").forEach(s=>s.classList.remove("active"));
-  e.classList.add("active");updatePrice();
+function setWeight(w, el) {
+  weight = w;
+  document.querySelectorAll(".weights button").forEach(b => b.classList.remove("active"));
+  el.classList.add("active");
 }
-function setQty(d){qty=Math.max(1,qty+d);mQty.innerText=qty}
-function updatePrice(){mPrice.innerText=activeItem.price*(weight/500)*qty}
-
-function addToCart(){
-  const key=`${activeItem.name} ${weight}g`;
-  if(!cart[key])cart[key]={qty:0,price:parseInt(mPrice.innerText)};
-  cart[key].qty+=qty;
-  count+=qty;total+=cart[key].price;
-  updateCart();closeModal();
+function changeQty(d) {
+  qty = Math.max(1, qty + d);
+  document.getElementById("qtyVal").innerText = qty;
 }
-
-function updateCart(){
-  cartItems.innerHTML="";
-  for(let k in cart){
-    cartItems.innerHTML+=`<p>${k} x ${cart[k].qty}</p>`;
+function addToCart() {
+  const key = activeProduct.name + " " + weight + "g";
+  if (!cart[key]) cart[key] = { ...activeProduct, qty: 0 };
+  cart[key].qty += qty;
+  updateCartUI();
+  closeModal();
+}
+function updateCartUI() {
+  let count = 0, total = 0;
+  for (let k in cart) {
+    count += cart[k].qty;
+    total += cart[k].qty * cart[k].price;
   }
-  totalEl.innerText=total;
-  countEl.innerText=count;
-  mobileTotal.innerText=total;
-  document.getElementById("mobileCartBar").classList.toggle("show",count>0);
+  document.getElementById("cartCount").innerText = count;
+  document.getElementById("mobileCount").innerText = count;
+  document.getElementById("cartTotal").innerText = total;
+  document.getElementById("mobileCart").style.display = count > 0 ? "block" : "none";
 }
-
-function toggleCart(){cart.classList.toggle("open")}
-function searchItems(v){
-  document.getElementById("clearSearch").style.display=v?"block":"none";
-  render(productsData.filter(p=>p.name.toLowerCase().includes(v.toLowerCase())));
+function toggleCart() {
+  document.getElementById("cart").classList.toggle("open");
 }
-function clearSearch(){searchInput.value="";render(productsData)}
-function scrollToTop(){window.scrollTo({top:0,behavior:"smooth"})}
-function toggleDark(){document.body.classList.toggle("dark")}
-function checkout(){
-  let msg=`Hello Konaseema Specials\nName:${custName.value}\nPhone:${custPhone.value}\nLocation:${custLoc.value}\nOrder:\n`;
-  for(let k in cart)msg+=`${k} x ${cart[k].qty}\n`;
-  msg+=`Total ₹${total}`;
-  window.open(`https://wa.me/${ADMIN_PHONE}?text=${encodeURIComponent(msg)}`);
+function checkout() {
+  const name = document.getElementById("custName").value;
+  const phone = document.getElementById("custPhone").value;
+  let msg = `Hello Konaseema Specials 🌸%0AName: ${name}%0APhone: ${phone}%0A`;
+  for (let k in cart) {
+    msg += `${k} x${cart[k].qty}%0A`;
+  }
+  window.open(`https://wa.me/${ADMIN_PHONE}?text=${msg}`);
+}
+function filterCat(c, btn) {
+  currentCat = c;
+  document.querySelectorAll(".categories button").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  renderProducts();
+}
+function searchItems(v) {
+  const val = v.toLowerCase();
+  grid.innerHTML = "";
+  products.filter(p => p.name.toLowerCase().includes(val))
+    .forEach((p, i) => openModal(i));
+}
+function clearSearch() {
+  renderProducts();
+}
+function scrollToTop() {
+  window.scrollTo({ top: 0, behavior: "smooth" });
 }
