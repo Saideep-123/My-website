@@ -1,121 +1,155 @@
 const ADMIN_PHONE = "7989301401";
 
-let products = [
+let category = "All";
+let activeItem = null;
+let qty = 1;
+let cart = {};
+let search = "";
+
+const items = [
   {
     name: "Pootharekulu",
     cat: "Sweets",
-    price: 450,
-    img: "https://upload.wikimedia.org/wikipedia/commons/7/7f/Pootharekulu.jpg",
-    desc: "Famous paper-thin sweet from Atreyapuram made with rice starch and jaggery."
+    img: "https://i0.wp.com/vismaifood.com/storage/app/uploads/public/0f0/05a/dfb/thumb__700_0_0_0_auto.jpg",
+    desc: [
+      "Made with rice starch sheets",
+      "Filled with jaggery & ghee",
+      "Traditional Andhra sweet",
+      "Very light and crispy",
+      "Prepared fresh on order"
+    ]
   },
   {
     name: "Kakinada Kaja",
     cat: "Sweets",
-    price: 380,
-    img: "https://upload.wikimedia.org/wikipedia/commons/6/6c/Kakinada_Kaja.jpg",
-    desc: "Crispy layered sweet soaked in sugar syrup."
+    img: "https://www.archanaskitchen.com/images/archanaskitchen/1-Author/Shaheen_Ali/Kakinada_Kaja.jpg",
+    desc: [
+      "Deep fried layered sweet",
+      "Soaked in sugar syrup",
+      "Crispy outside, soft inside",
+      "Famous from Kakinada",
+      "Perfect festive sweet"
+    ]
+  },
+  {
+    name: "Chekkalu",
+    cat: "Snacks",
+    img: "https://www.archanaskitchen.com/images/archanaskitchen/1-Author/Shaheen_Ali/Andhra_Chekkalu.jpg",
+    desc: [
+      "Rice flour based snack",
+      "Flavored with cumin & chilli",
+      "Very crunchy texture",
+      "Tea-time favorite",
+      "Homemade style"
+    ]
   },
   {
     name: "Avakaya Pickle",
     cat: "Pickles",
-    price: 320,
-    img: "https://upload.wikimedia.org/wikipedia/commons/9/91/Avakaya_Pickle.jpg",
-    desc: "Traditional Andhra mango pickle with mustard & garlic."
+    img: "https://www.vegrecipesofindia.com/wp-content/uploads/2021/05/avakaya-pickle.jpg",
+    desc: [
+      "Raw mango based pickle",
+      "Stone-ground mustard",
+      "Authentic Konaseema taste",
+      "No preservatives",
+      "Sun-cured preparation"
+    ]
   }
 ];
 
-let cart = {};
-let activeProduct = null;
-let weight = 500;
-let qty = 1;
-let currentCat = "All";
+/* RENDER */
+function render() {
+  const box = document.getElementById("products");
+  box.innerHTML = "";
 
-const grid = document.getElementById("productGrid");
-const modal = document.getElementById("productModal");
+  const filtered = items.filter(i =>
+    (category === "All" || i.cat === category) &&
+    i.name.toLowerCase().includes(search)
+  );
 
-function renderProducts() {
-  grid.innerHTML = "";
-  products.filter(p => currentCat === "All" || p.cat === currentCat)
-    .forEach((p, i) => {
-      grid.innerHTML += `
-        <div class="product" onclick="openModal(${i})">
-          <img src="${p.img}">
-          <div class="info">
-            <strong>${p.name}</strong><br>
-            ₹${p.price}
-          </div>
+  if (filtered.length === 0) {
+    document.getElementById("suggestions").innerText =
+      "Sorry, item not found. Try searching another item.";
+    return;
+  } else {
+    document.getElementById("suggestions").innerText = "";
+  }
+
+  filtered.forEach((i, idx) => {
+    box.innerHTML += `
+      <div class="product" onclick="openModal(${idx})">
+        <img src="${i.img}">
+        <div class="info">
+          <strong>${i.name}</strong>
         </div>
-      `;
-    });
+      </div>`;
+  });
 }
-renderProducts();
 
+render();
+
+/* MODAL */
 function openModal(i) {
-  activeProduct = products[i];
+  activeItem = items[i];
   qty = 1;
-  document.getElementById("modalImg").src = activeProduct.img;
-  document.getElementById("modalName").innerText = activeProduct.name;
-  document.getElementById("modalDesc").innerText = activeProduct.desc;
-  document.getElementById("qtyVal").innerText = qty;
-  modal.classList.add("show");
+  document.getElementById("qty").innerText = qty;
+  document.getElementById("mName").innerText = activeItem.name;
+  document.getElementById("mImg").src = activeItem.img;
+
+  const ul = document.getElementById("mDesc");
+  ul.innerHTML = "";
+  activeItem.desc.forEach(d => ul.innerHTML += `<li>${d}</li>`);
+
+  document.getElementById("modal").classList.add("active");
 }
+
 function closeModal() {
-  modal.classList.remove("show");
+  document.getElementById("modal").classList.remove("active");
 }
-function setWeight(w, el) {
-  weight = w;
-  document.querySelectorAll(".weights button").forEach(b => b.classList.remove("active"));
-  el.classList.add("active");
+
+function changeQty(v) {
+  qty = Math.max(1, qty + v);
+  document.getElementById("qty").innerText = qty;
 }
-function changeQty(d) {
-  qty = Math.max(1, qty + d);
-  document.getElementById("qtyVal").innerText = qty;
-}
+
+/* CART */
 function addToCart() {
-  const key = activeProduct.name + " " + weight + "g";
-  if (!cart[key]) cart[key] = { ...activeProduct, qty: 0 };
-  cart[key].qty += qty;
-  updateCartUI();
+  cart[activeItem.name] = (cart[activeItem.name] || 0) + qty;
+  document.getElementById("cartCount").innerText =
+    Object.values(cart).reduce((a,b)=>a+b,0);
   closeModal();
 }
-function updateCartUI() {
-  let count = 0, total = 0;
-  for (let k in cart) {
-    count += cart[k].qty;
-    total += cart[k].qty * cart[k].price;
-  }
-  document.getElementById("cartCount").innerText = count;
-  document.getElementById("mobileCount").innerText = count;
-  document.getElementById("cartTotal").innerText = total;
-  document.getElementById("mobileCart").style.display = count > 0 ? "block" : "none";
-}
+
 function toggleCart() {
   document.getElementById("cart").classList.toggle("open");
 }
+
 function checkout() {
-  const name = document.getElementById("custName").value;
   const phone = document.getElementById("custPhone").value;
-  let msg = `Hello Konaseema Specials 🌸%0AName: ${name}%0APhone: ${phone}%0A`;
-  for (let k in cart) {
-    msg += `${k} x${cart[k].qty}%0A`;
-  }
+  if (!phone) return alert("Enter phone number");
+
+  let msg = "Hello Konaseema Specials%0AOrder:%0A";
+  for (let k in cart) msg += `• ${k} x${cart[k]}%0A`;
+
   window.open(`https://wa.me/${ADMIN_PHONE}?text=${msg}`);
 }
-function filterCat(c, btn) {
-  currentCat = c;
+
+/* SEARCH */
+document.getElementById("searchInput").oninput = e => {
+  search = e.target.value.toLowerCase();
+  render();
+};
+
+document.getElementById("clearSearch").onclick = () => {
+  search = "";
+  document.getElementById("searchInput").value = "";
+  render();
+};
+
+/* CATEGORY */
+function setCategory(c, el) {
+  category = c;
   document.querySelectorAll(".categories button").forEach(b => b.classList.remove("active"));
-  btn.classList.add("active");
-  renderProducts();
-}
-function searchItems(v) {
-  const val = v.toLowerCase();
-  grid.innerHTML = "";
-  products.filter(p => p.name.toLowerCase().includes(val))
-    .forEach((p, i) => openModal(i));
-}
-function clearSearch() {
-  renderProducts();
-}
-function scrollToTop() {
-  window.scrollTo({ top: 0, behavior: "smooth" });
+  el.classList.add("active");
+  render();
 }
