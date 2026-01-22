@@ -12,7 +12,7 @@ body {
 /* HERO */
 .hero {
   height: 55vh;
-  background: url("https://images.unsplash.com/photo-1601050690597-df0568f70950") center/cover no-repeat;
+  background: url("https://images.unsplash.com/photo-1601050690597-df0568f70950?w=800") center/cover no-repeat;
   position: relative;
 }
 
@@ -89,32 +89,34 @@ header input {
 .products {
   padding: 1rem;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 10px;
 }
 
 .product {
   background: #fff;
-  border-radius: 20px;
+  border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 10px 20px rgba(0,0,0,.15);
+  box-shadow: 0 5px 15px rgba(0,0,0,.15);
   cursor: pointer;
   transition: transform .3s;
 }
 
 .product:hover {
-  transform: translateY(-6px);
+  transform: translateY(-4px);
 }
 
 .product img {
   width: 100%;
-  height: 120px; /* smaller for mobile */
+  height: auto;
+  max-height: 120px;
   object-fit: cover;
-  border-radius: 16px;
+  display: block;
+  border-radius: 12px;
 }
 
 .product .info {
-  padding: .7rem;
+  padding: .5rem;
   text-align: center;
   font-weight: 600;
   font-size: 0.9rem;
