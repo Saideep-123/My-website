@@ -1,76 +1,93 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Konaseema Specials – WhatsApp Menu</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Konaseema Specials</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="hero"></div>
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-overlay"></div>
+  <h1 class="hero-title">Konaseema Specials</h1>
+</section>
 
-<header>
-  <input id="searchInput" class="search" placeholder="Search items" oninput="searchItems(this.value)">
-  <button id="clearSearch" onclick="clearSearch()">✖</button>
-
+<!-- HEADER -->
+<header class="top-bar">
   <div class="logo" onclick="scrollToTop()">Konaseema Specials</div>
 
-  <div class="header-right">
-    <button onclick="toggleDark()">🌙</button>
-    <button id="cartBtn" onclick="toggleCart()">🛒 <span id="count">0</span></button>
+  <div class="right-tools">
+    <div class="search-box">
+      <input type="text" placeholder="Search items…" oninput="searchItems(this.value)">
+      <span class="clear" onclick="clearSearch()">✕</span>
+    </div>
+    <button class="cart-btn" onclick="toggleCart()">🛒 <span id="cartCount">0</span></button>
   </div>
 </header>
 
-<div class="categories" id="categories"></div>
+<!-- CATEGORIES -->
+<div class="categories">
+  <button class="active" onclick="filterCat('All', this)">All</button>
+  <button onclick="filterCat('Ugadi', this)">🌸 Ugadi</button>
+  <button onclick="filterCat('Sweets', this)">Sweets</button>
+  <button onclick="filterCat('Snacks', this)">Snacks</button>
+  <button onclick="filterCat('Pickles', this)">Pickles</button>
+</div>
 
-<div id="suggestions"></div>
-<div class="products" id="products"></div>
+<!-- PRODUCTS -->
+<div class="products" id="productGrid"></div>
 
-<!-- Modal -->
-<div class="modal" id="modal">
-  <div class="modal-content">
-    <button class="modal-close" onclick="closeModal()">✖</button>
-    <h3 id="mName"></h3>
-    <img id="mImg">
-    <p id="mDesc"></p>
+<!-- MODAL -->
+<div class="modal" id="productModal">
+  <div class="modal-box">
+    <span class="close-x" onclick="closeModal()">✕</span>
+    <img id="modalImg">
+    <h3 id="modalName"></h3>
+    <p id="modalDesc"></p>
 
-    <div class="weight-boxes">
-      <span onclick="setWeight(250,this)">250g</span>
-      <span class="active" onclick="setWeight(500,this)">500g</span>
-      <span onclick="setWeight(1000,this)">1kg</span>
+    <div class="weights">
+      <button onclick="setWeight(250,this)">250g</button>
+      <button class="active" onclick="setWeight(500,this)">500g</button>
+      <button onclick="setWeight(1000,this)">1kg</button>
     </div>
 
-    <div class="quantity">
-      <button onclick="setQty(-1)">−</button>
-      <span id="mQty">1</span>
-      <button onclick="setQty(1)">+</button>
+    <div class="qty">
+      <button onclick="changeQty(-1)">−</button>
+      <span id="qtyVal">1</span>
+      <button onclick="changeQty(1)">+</button>
     </div>
 
-    <p class="price">₹<span id="mPrice"></span></p>
-    <button class="primary" onclick="addToCart()">Add to Cart</button>
+    <button class="add-btn" onclick="addToCart()">Add to Cart</button>
   </div>
 </div>
 
-<!-- Cart -->
+<!-- CART -->
 <div class="cart" id="cart">
-  <button class="close-cart" onclick="toggleCart()">✖</button>
-  <h3>Your Order</h3>
+  <div class="cart-header">
+    <h3>Your Order</h3>
+    <span onclick="toggleCart()">✕</span>
+  </div>
+
   <div id="cartItems"></div>
-  <p class="total">Total ₹<span id="total">0</span></p>
 
-  <input id="custName" placeholder="Your Name">
-  <input id="custPhone" placeholder="Your Phone">
-  <input id="custLoc" placeholder="Delivery Location">
-
-  <button class="primary" onclick="checkout()">Order on WhatsApp</button>
+  <div class="cart-footer">
+    <p>Total: ₹<span id="cartTotal">0</span></p>
+    <input placeholder="Your Name" id="custName">
+    <input placeholder="Your Phone" id="custPhone">
+    <button onclick="checkout()">Order on WhatsApp</button>
+  </div>
 </div>
 
-<!-- Mobile Cart Bar -->
-<div id="mobileCartBar" onclick="toggleCart()">
-  <span>View Cart</span>
-  <strong>₹<span id="mobileTotal">0</span></strong>
+<!-- MOBILE CART BAR -->
+<div class="mobile-cart" id="mobileCart" onclick="toggleCart()">
+  🛒 View Cart (<span id="mobileCount">0</span>)
 </div>
 
 <script src="script.js"></script>
