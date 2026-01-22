@@ -4,14 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Konaseema Specials</title>
-
-  <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-
-  <!-- CSS -->
   <link rel="stylesheet" href="style.css" />
 </head>
-
 <body>
   <!-- HERO -->
   <div class="hero">
@@ -23,16 +18,9 @@
 
   <!-- HEADER -->
   <header>
-    <input
-      id="searchInput"
-      type="text"
-      placeholder="Search items..."
-    />
+    <input id="searchInput" type="text" placeholder="Search items..." />
     <button id="clearSearch">✕</button>
-
-    <button id="cartBtn">
-      🛒 Cart <span id="cartCount">0</span>
-    </button>
+    <button id="cartBtn">🛒 Cart <span id="cartCount">0</span></button>
   </header>
 
   <!-- CATEGORIES -->
@@ -75,11 +63,8 @@
       <h3>Your Cart</h3>
       <span onclick="toggleCart()">✕</span>
     </div>
-
     <div id="cartItems"></div>
-
     <input id="custPhone" placeholder="Enter your phone number" />
-
     <button class="primary" onclick="checkout()">Order on WhatsApp</button>
   </div>
 
