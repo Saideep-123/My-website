@@ -9,76 +9,69 @@
 </head>
 <body>
 
-<!-- Hero / Top Video -->
 <div class="hero"></div>
 
-<!-- Header -->
 <header>
-  <input id="searchInput" class="search" placeholder="Search" oninput="searchItems(this.value)">
-  <button id="clearSearch" onclick="clearSearch()" style="display:none;">✖</button>
+  <input id="searchInput" class="search" placeholder="Search items" oninput="searchItems(this.value)">
+  <button id="clearSearch" onclick="clearSearch()">✖</button>
+
   <div class="logo" onclick="scrollToTop()">Konaseema Specials</div>
-  <div>
-    <button class="toggle" onclick="toggleDark()">🌙</button>
+
+  <div class="header-right">
+    <button onclick="toggleDark()">🌙</button>
     <button id="cartBtn" onclick="toggleCart()">🛒 <span id="count">0</span></button>
   </div>
 </header>
 
-<!-- Categories -->
-<div class="categories">
-  <button class="active" onclick="setCat('All',this)">All</button>
-  <button onclick="setCat('Ugadi',this)">🌸 Ugadi</button>
-  <button onclick="setCat('Sweets',this)">Sweets</button>
-  <button onclick="setCat('Snacks',this)">Snacks</button>
-  <button onclick="setCat('Podis',this)">Podis</button>
-  <button onclick="setCat('Papads',this)">Papads</button>
-  <button onclick="setCat('Pickles',this)">Pickles</button>
-</div>
+<div class="categories" id="categories"></div>
 
-<!-- Products Grid -->
+<div id="suggestions"></div>
 <div class="products" id="products"></div>
 
-<!-- Modal for Item Details -->
+<!-- Modal -->
 <div class="modal" id="modal">
   <div class="modal-content">
     <button class="modal-close" onclick="closeModal()">✖</button>
     <h3 id="mName"></h3>
-    <img id="mImg" loading="lazy">
+    <img id="mImg">
     <p id="mDesc"></p>
 
-    <strong>Choose Weight</strong>
     <div class="weight-boxes">
       <span onclick="setWeight(250,this)">250g</span>
       <span class="active" onclick="setWeight(500,this)">500g</span>
       <span onclick="setWeight(1000,this)">1kg</span>
     </div>
 
-    <strong>Quantity</strong>
-    <div class="quantity-box">
-      <button onclick="setQuantity(-1)">-</button>
+    <div class="quantity">
+      <button onclick="setQty(-1)">−</button>
       <span id="mQty">1</span>
-      <button onclick="setQuantity(1)">+</button>
+      <button onclick="setQty(1)">+</button>
     </div>
 
-    <p><strong>Price:</strong> ₹<span id="mPrice"></span></p>
+    <p class="price">₹<span id="mPrice"></span></p>
     <button class="primary" onclick="addToCart()">Add to Cart</button>
   </div>
 </div>
 
-<!-- Cart Panel -->
+<!-- Cart -->
 <div class="cart" id="cart">
-  <button class="close-btn" onclick="toggleCart()">✖</button>
+  <button class="close-cart" onclick="toggleCart()">✖</button>
   <h3>Your Order</h3>
   <div id="cartItems"></div>
-  <p>Total: ₹<span id="total">0</span></p>
-  <div class="warn" id="minWarn"></div>
-  <input id="custName" placeholder="Your Name" style="width:100%;margin:.4rem 0;padding:.4rem">
-  <input id="custPhone" placeholder="Phone Number" style="width:100%;margin:.4rem 0;padding:.4rem">
-  <input id="custLoc" placeholder="Delivery Location" style="width:100%;margin:.4rem 0;padding:.4rem">
+  <p class="total">Total ₹<span id="total">0</span></p>
+
+  <input id="custName" placeholder="Your Name">
+  <input id="custPhone" placeholder="Your Phone">
+  <input id="custLoc" placeholder="Delivery Location">
+
   <button class="primary" onclick="checkout()">Order on WhatsApp</button>
 </div>
 
-<!-- Suggestions -->
-<div id="suggestions"></div>
+<!-- Mobile Cart Bar -->
+<div id="mobileCartBar" onclick="toggleCart()">
+  <span>View Cart</span>
+  <strong>₹<span id="mobileTotal">0</span></strong>
+</div>
 
 <script src="script.js"></script>
 </body>
